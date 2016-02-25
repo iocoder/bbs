@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define USERNAME "bbs"
 #define PASSWORD "bbs"
@@ -39,5 +41,7 @@ int exec_ssh(char *hostname, char *cmd, ...) {
     } else {
         /* child */
         execvp(argv[0], argv);
+        fprintf(stderr, "Error: can't execute %s\n", argv[0]);
+        exit(-1);
     }
 }
