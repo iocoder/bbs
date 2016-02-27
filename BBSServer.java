@@ -11,11 +11,11 @@ public class BBSServer {
             //Naming.rebind("News", obj); 
             Registry registry = LocateRegistry.getRegistry("localhost");
             registry.rebind("News", obj);
+            obj.handleRequests();
         } catch (Exception e) { 
             System.out.println("NewsImpl err: " + e.getMessage()); 
             e.printStackTrace(); 
         }
     }
-    
 }
 
