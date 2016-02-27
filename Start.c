@@ -8,17 +8,45 @@
 #define WRITER_COUNT_PROP   "RW.numberOfWriters"
 #define READER_PROP         "RW.reader"
 #define WRITER_PROP         "RW.writer"
+#define ACCESS_PROP         "RW.numberOfAccesses"
 
 int main() {
-    int reader_cnt, writer_cnt, i;
+    int i;
+    int reader_cnt, writer_cnt, access_cnt;
     char *serverip;
     char num[20];
+    char reader_cnt_str[20];
+    char writer_cnt_str[20];
+    char access_cnt_str[20];
     /* print splash */
     printf("**************************\n");
     printf("* Welcome to BBS system! *\n");
     printf("**************************\n");
     /* read configuration file */
     read_conf();
+    /* read number of accesses */
+    access_cnt = get_val_int(ACCESS_PROP, -1);
+    if (access_cnt < 0) {
+        fprintf(stderr, "Error: can't read %s property.\n", ACCESS_PROP);
+        return -1;
+    }
+    sprintf(access_cnt_str, "%d", access_cnt);
+    /* read number of readers */
+    reader_cnt = get_val_int(READER_COUNT_PROP, -1);
+    if (reader_cnt < 0) {
+        fprintf(stderr, "Error: can't read %s property.\n", READER_COUNT_PROP);
+        return -1;
+    }
+    sprintf(reader_cnt_str, "%d", reader_cnt);
+    printf("Readers count: %d\n", reader_cnt);
+    /* read number of writers */
+    writer_cnt = get_val_int(WRITER_COUNT_PROP, -1);
+    if (writer_cnt < 0) {
+        fprintf(stderr, "Error: can't read %s property.\n", WRITER_COUNT_PROP);
+        return -1;
+    }
+    sprintf(writer_cnt_str, "%d", writer_cnt);
+    printf("Writers count: %d\n", writer_cnt);
     /* read server IP */
     serverip = get_val_str(SERVER_PROP, -1);
     if (!serverip) {
@@ -27,16 +55,9 @@ int main() {
     }
     /* execute server */
     printf("Starting server on %s...\n", serverip);
-    exec_ssh(serverip, "java", "-classpath","/usr/local/share/bbs", 
-                       "BBSServer", NULL);
+    exec_ssh(serverip, "/usr/local/bin/bbs_server", reader_cnt_str, writer_cnt_str, 
+                       access_cnt_str, NULL);
     system("sleep 5");
-    /* read number of readers */
-    reader_cnt = get_val_int(READER_COUNT_PROP, -1);
-    if (reader_cnt < 0) {
-        fprintf(stderr, "Error: can't read %s property.\n", READER_COUNT_PROP);
-        return -1;
-    }
-    printf("Readers count: %d\n", reader_cnt);
     /* loop over readers */
     for (i = 0; i < reader_cnt; i++) {
         char *host = get_val_str(READER_PROP, i);
@@ -48,15 +69,8 @@ int main() {
         printf("SSH reader %s\n", host);
         sprintf(num, "%d", i);
         exec_ssh(host, "java", "-classpath","/usr/local/share/bbs", 
-                       "Reader", num, serverip, NULL);
+                       "Reader", num, serverip, access_cnt_str, NULL);
     }
-    /* read number of writers */
-    writer_cnt = get_val_int(WRITER_COUNT_PROP, -1);
-    if (writer_cnt < 0) {
-        fprintf(stderr, "Error: can't read %s property.\n", WRITER_COUNT_PROP);
-        return -1;
-    }
-    printf("Writers count: %d\n", writer_cnt);
     /* loop over writers */
     for (i = 0; i < writer_cnt; i++) {
         char *host = get_val_str(WRITER_PROP, i);
@@ -68,7 +82,7 @@ int main() {
         printf("SSH writer %s\n", host);
         sprintf(num, "%d", i);
         exec_ssh(host, "java", "-classpath","/usr/local/share/bbs", 
-                       "Writer", num, serverip, NULL);
+                       "Writer", num, serverip, access_cnt_str, NULL);
     }
     /* done */
     return 0;

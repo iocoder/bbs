@@ -1,6 +1,7 @@
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.concurrent.Semaphore;
 
 public class Request {
 
@@ -9,12 +10,12 @@ public class Request {
     int retVal;
     int rSeq;
     int sSeq;
-    boolean done;
+    Semaphore done;
 
     public Request(int id, boolean isWrite) {
         this.id = id;
         this.isWrite = isWrite;
-        this.done = false;
+        this.done = new Semaphore(0);
     }
 }
 

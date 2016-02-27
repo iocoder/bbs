@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export CLASSPATH=/usr/local/share/bbs
+rmiregistry &
+sleep 2
+java BBSServer $*
+killall rmiregistry

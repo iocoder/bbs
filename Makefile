@@ -1,5 +1,6 @@
 START_CFILES=Start.c readconf.c ssh.c
 START=bbs_start
+SERVER=bbs_server
 
 all:
 	gcc -o $(START) $(START_CFILES)
@@ -11,6 +12,7 @@ install: all
 	sudo mkdir -p /etc/bbs
 	sudo cp system.properties /etc/bbs
 	sudo cp $(START) /usr/local/bin
+	sudo cp $(SERVER) /usr/local/bin
 
 run: install
 	$(START)
