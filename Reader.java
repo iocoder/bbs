@@ -6,7 +6,6 @@ public class Reader {
 
     public static void main(String arg[]) { 
         String message = "blank";
-
         try { 
             Registry registry = LocateRegistry.getRegistry(arg[1]);
             NewsInterface obj = (NewsInterface) registry.lookup("News");
@@ -14,7 +13,7 @@ public class Reader {
         } catch (Exception e) { 
             System.out.println("Reader exception: " + e.getMessage()); 
             e.printStackTrace(); 
-        } 
+        }
     }
     
 } 

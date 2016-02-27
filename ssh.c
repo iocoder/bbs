@@ -37,7 +37,7 @@ int exec_ssh(char *hostname, char *cmd, ...) {
     /* execute ssh */
     if (pid = fork()) {
         /* parent */
-        waitpid(pid, &status, 0);
+        /*waitpid(pid, &status, 0);*/
     } else {
         /* child */
         execvp(argv[0], argv);

@@ -8,7 +8,7 @@
 
 #include "proto.h"
 
-#define CONF_FILE   "system.properties"
+#define CONF_FILE   "/etc/bbs/system.properties"
 #define MAX_BUF     4096
 
 struct property {
