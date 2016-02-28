@@ -1,7 +1,8 @@
 #!/bin/bash
 
 export CLASSPATH=/usr/local/share/bbs
-rmiregistry &
-sleep 2
+echo "Loading BBS server..."
 java BBSServer $*
+sleep 1
+echo "Terminating RMI registry..."
 killall rmiregistry

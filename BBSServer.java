@@ -16,6 +16,8 @@ public class BBSServer {
             Registry registry = LocateRegistry.getRegistry("localhost");
             registry.rebind("News", obj);
             obj.handleRequests();
+            obj.reader_log.close();
+            obj.writer_log.close();
             System.out.println("Terminating the server...");
             registry.unbind("News");
             System.exit(0);

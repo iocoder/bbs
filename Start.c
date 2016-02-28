@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "proto.h"
 
@@ -53,11 +55,15 @@ int main() {
         fprintf(stderr, "Error: can't read %s property.\n", SERVER_PROP);
         return -1;
     }
+    /* start RMI registry */
+    printf("Starting RMI registry on %s...\n", serverip);
+    exec_ssh(serverip, "/usr/local/bin/bbs_runrmi", NULL);
+    wait(NULL);
     /* execute server */
-    printf("Starting server on %s...\n", serverip);
+    printf("Starting BBS server on %s...\n", serverip);
     exec_ssh(serverip, "/usr/local/bin/bbs_server", reader_cnt_str, writer_cnt_str, 
                        access_cnt_str, NULL);
-    system("sleep 5");
+    system("sleep 15");
     /* loop over readers */
     for (i = 0; i < reader_cnt; i++) {
         char *host = get_val_str(READER_PROP, i);
@@ -66,7 +72,7 @@ int main() {
                             READER_PROP, i);
             return -1;
         }
-        printf("SSH reader %s\n", host);
+        printf("SSH reader %d on %s\n", i, host);
         sprintf(num, "%d", i);
         exec_ssh(host, "java", "-classpath","/usr/local/share/bbs", 
                        "Reader", num, serverip, access_cnt_str, NULL);
@@ -79,11 +85,13 @@ int main() {
                             WRITER_PROP, i);
             return -1;
         }
-        printf("SSH writer %s\n", host);
-        sprintf(num, "%d", i);
+        printf("SSH writer %d on %s\n", i+reader_cnt, host);
+        sprintf(num, "%d", i+reader_cnt);
         exec_ssh(host, "java", "-classpath","/usr/local/share/bbs", 
                        "Writer", num, serverip, access_cnt_str, NULL);
     }
+    /* optional: wait until all children exit */
+    while (wait(NULL) > 0);
     /* done */
     return 0;
 }

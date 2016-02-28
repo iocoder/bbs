@@ -10,6 +10,7 @@ public class Request {
     int retVal;
     int rSeq;
     int sSeq;
+    int rNum;
     Semaphore done;
 
     public Request(int id, boolean isWrite) {
@@ -18,4 +19,3 @@ public class Request {
         this.done = new Semaphore(0);
     }
 }
-

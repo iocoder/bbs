@@ -26,6 +26,8 @@ int exec_ssh(char *hostname, char *cmd, ...) {
     argv[i++] = "-p";
     argv[i++] = PASSWORD;
     argv[i++] = "ssh";
+    argv[i++] = "-o";
+    argv[i++] = "StrictHostKeyChecking no";
     argv[i++] = "-l";
     argv[i++] = USERNAME;
     argv[i++] = hostname;
