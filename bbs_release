@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Waiting for port 1099 to release..."
+while [ -n "`netstat -tulnap 2>/dev/null | grep 1099`" ]; do
+    : # do nothing 
+done
+sleep 1

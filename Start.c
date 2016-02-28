@@ -57,7 +57,11 @@ int main() {
     }
     /* start RMI registry */
     printf("Starting RMI registry on %s...\n", serverip);
-    exec_ssh(serverip, "/usr/local/bin/bbs_runrmi", NULL);
+    exec_ssh(serverip, "/usr/local/bin/bbs_release", NULL);
+    wait(NULL);
+    printf("Executing rmiregistry...\n");
+    exec_ssh(serverip, "CLASSPATH=/usr/local/share/bbs", "rmiregistry", NULL);
+    exec_ssh(serverip, "/usr/local/bin/bbs_acquire", NULL);
     wait(NULL);
     /* execute server */
     printf("Starting BBS server on %s...\n", serverip);
