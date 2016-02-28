@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Waiting for port 1099 to get acquired..."
-while [ -z "`netstat -tulnap 2>/dev/null | grep 1099`" ]; do
+while [ -z "`netstat -tulnap tcp 2>/dev/null | grep 1099`" ]; do
     : # do nothing 
 done
 sleep 1
